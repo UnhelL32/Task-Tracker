@@ -4,16 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Task Tracker</title>
-    <!-- Tailwind CSS for modern responsive UI -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Chart.js for beautiful Web & Mobile Analytics Graphics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Web App Manifest for Android Installation -->
     <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkFkdmFuY2VkIFRhc2sgVHJhY2tlciIsCiAgInNob3J0X25hbWUiOiAiVGFza1RyYWNrZXIiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2Y4ZmE5YyIsCiAgInRoZW1lX2NvbG9yIjogIiM0ZjQ2ZTUiCn0=">
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased">
 
-    <!-- 1. LOGIN SCREEN -->
     <div id="login-screen" class="min-h-screen flex items-center justify-center px-4">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
             <div class="text-center mb-8">
@@ -38,9 +34,7 @@
         </div>
     </div>
 
-    <!-- 2. MAIN APPLICATION DASHBOARD (HIDDEN BY DEFAULT) -->
     <div id="app-dashboard" class="hidden min-h-screen flex flex-col">
-        <!-- Top Navigation -->
         <header class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sticky top-0 z-50">
             <div>
                 <h1 class="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">🎯 Task Dashboard</h1>
@@ -52,19 +46,17 @@
         </header>
 
         <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- LEFT PANEL: CONTROLS & NEW TASKS -->
             <div class="space-y-6">
-                <!-- Add Main Task Form -->
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                     <h2 class="text-lg font-bold mb-4 flex items-center gap-2">➕ Create Main Task</h2>
                     <form onsubmit="addMainTask(event)" class="space-y-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Task Title</label>
-                            <input type="text" id="task-title" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <input type="text" id="task-title" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Details</label>
-                            <textarea id="task-details" rows="2" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                            <textarea id="task-details" rows="2" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm"></textarea>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
@@ -91,7 +83,6 @@
                     </form>
                 </div>
 
-                <!-- Graphs Container -->
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-8">
                     <div>
                         <h3 class="text-sm font-bold text-slate-900 mb-2 uppercase tracking-wide text-center">Success Rate (On-Time Completion)</h3>
@@ -109,13 +100,11 @@
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: INTERACTIVE LEDGERS & MANAGEMENT -->
             <div class="lg:col-span-2 space-y-6">
-                <!-- Tabs for Summary Ledger -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="flex border-b border-slate-200 bg-slate-50/50">
-                        <button id="tab-ongoing" onclick="switchLedger('ongoing')" class="flex-1 py-3 font-semibold text-sm border-b-2 border-indigo-600 text-indigo-600 transition cursor-pointer">🔄 Ongoing Ledger</button>
-                        <button id="tab-finished" onclick="switchLedger('finished')" class="flex-1 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition cursor-pointer">✅ Finished Ledger</button>
+                        <button id="tab-ongoing" onclick="switchLedger('ongoing')" class="flex-1 py-3 font-semibold text-sm border-b-2 border-indigo-600 text-indigo-600 transition cursor-pointer text-center">🔄 Ongoing Ledger</button>
+                        <button id="tab-finished" onclick="switchLedger('finished')" class="flex-1 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition cursor-pointer text-center">✅ Finished Ledger</button>
                     </div>
                     <div class="p-4 overflow-x-auto max-h-64 overflow-y-auto">
                         <table class="w-full text-left border-collapse text-sm">
@@ -127,31 +116,23 @@
                                     <th class="pb-2">Status / Delays</th>
                                 </tr>
                             </thead>
-                            <tbody id="ledger-body">
-                                <!-- Generated ledger rows -->
-                            </tbody>
+                            <tbody id="ledger-body"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Management Board -->
                 <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">🗂️ Task Management Board</h2>
-                <div id="board-container" class="space-y-4">
-                    <!-- Dynamic Cards Inserted Here -->
-                </div>
+                <div id="board-container" class="space-y-4"></div>
             </div>
         </main>
     </div>
 
-    <!-- 3. CORE APPLICATION ENGINE -->
     <script>
-        // Local database state architecture
         let state = JSON.parse(localStorage.getItem('task_tracker_state')) || { tasks: [] };
         let currentTab = 'ongoing';
         let successChart = null;
         let overdueChart = null;
 
-        // Verify valid login session on load
         window.onload = function() {
             if (sessionStorage.getItem('isLoggedIn') === 'true') {
                 showDashboard();
@@ -204,19 +185,15 @@
             return diffDays > 0 ? diffDays : 0;
         }
 
-        // AUTO-EMAIL DISPATCH ENGINE
         function triggerEmailReminder(taskName, taskDeadline, repeatType) {
             const emailTo = "jioniut@gmail.com";
             const subject = encodeURIComponent(`🚨 Task Update/Reminder: ${taskName}`);
-            
             let recurringNote = repeatType !== 'None' ? `This is a recurring **${repeatType}** task loop.` : "This is a one-time project target.";
-            
             const body = encodeURIComponent(`Hello,\n\nThis is an alert from your Task Tracker App.\n\nTask Title: "${taskName}"\nTracking Mode: ${recurringNote}\nTarget Milestone Date: ${taskDeadline}\n\nYour dashboard records have been processed accordingly.`);
             
             window.location.href = `mailto:${emailTo}?subject=${subject}&body=${body}`;
         }
 
-        // DATE ADDITION COMPILER FOR RECURRING PATTERNS
         function getFutureDate(currentDateStr, daysToAdd) {
             let result = new Date(currentDateStr);
             result.setDate(result.getDate() + daysToAdd);
@@ -245,6 +222,11 @@
 
             state.tasks.push(newTask);
             e.target.reset();
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('task-start').value = today;
+            document.getElementById('task-deadline').value = today;
+            
             saveState();
         }
 
@@ -275,7 +257,52 @@
             }
         }
 
-        // NEW: DELETE FUNCTION FOR MAIN TASKS
+        function editMainTaskInline(taskId) {
+            const task = state.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const newName = prompt("✏️ Edit Task Title:", task.name);
+            if (newName === null) return;
+            if (newName.trim() === "") { alert("Title cannot be empty!"); return; }
+
+            const newDetails = prompt("✏️ Edit Task Details:", task.details);
+            const newDeadline = prompt("✏️ Edit Deadline Date (YYYY-MM-DD):", task.deadline);
+            
+            if (newDeadline && isNaN(Date.parse(newDeadline))) {
+                alert("Invalid date format! Deadline was not altered.");
+            } else if (newDeadline) {
+                task.deadline = newDeadline;
+            }
+
+            task.name = newName;
+            task.details = newDetails || '';
+            saveState();
+        }
+
+        function editSubTaskInline(parentId, subId) {
+            const parent = state.tasks.find(t => t.id === parentId);
+            if (!parent) return;
+            const sub = parent.subtasks.find(s => s.id === subId);
+            if (!sub) return;
+
+            const newName = prompt("✏️ Edit Subtask Title:", sub.name);
+            if (newName === null) return;
+            if (newName.trim() === "") { alert("Title cannot be empty!"); return; }
+
+            const newDetails = prompt("✏️ Edit Subtask Details:", sub.details);
+            const newDeadline = prompt("✏️ Edit Subtask Deadline (YYYY-MM-DD):", sub.deadline);
+
+            if (newDeadline && isNaN(Date.parse(newDeadline))) {
+                alert("Invalid date format! Changes discarded.");
+            } else if (newDeadline) {
+                sub.deadline = newDeadline;
+            }
+
+            sub.name = newName;
+            sub.details = newDetails || '';
+            saveState();
+        }
+
         function deleteMainTask(taskId) {
             if (confirm("Are you sure you want to delete this main task and all of its subtasks?")) {
                 state.tasks = state.tasks.filter(t => t.id !== taskId);
@@ -283,7 +310,6 @@
             }
         }
 
-        // NEW: DELETE FUNCTION FOR INDIVIDUAL SUBTASKS
         function deleteSubTask(parentId, subId) {
             if (confirm("Are you sure you want to delete this subtask?")) {
                 const parent = state.tasks.find(t => t.id === parentId);
@@ -294,7 +320,6 @@
             }
         }
 
-        // INTERACTIVE PIPELINE CORE WITH COMPONENT AUTO-REBUILDING
         function updateStatus(id, isSubtask, parentId, newStatus) {
             const todayStr = new Date().toISOString().split('T')[0];
             let targetedItem = null;
@@ -320,7 +345,9 @@
                         const nextStart = getFutureDate(targetedItem.start_date, daysToExtend);
                         const nextDeadline = getFutureDate(targetedItem.deadline, daysToExtend);
 
-                        triggerEmailReminder(targetedItem.name, targetedItem.deadline, targetedItem.repeat_interval);
+                        setTimeout(() => {
+                            triggerEmailReminder(targetedItem.name, targetedItem.deadline, targetedItem.repeat_interval);
+                        }, 500);
 
                         targetedItem.start_date = nextStart;
                         targetedItem.deadline = nextDeadline;
@@ -329,7 +356,9 @@
                         
                         alert(`🔄 Recurrent Loop Triggered!\n"${targetedItem.name}" automatically scheduled forward to next frame (${nextDeadline}). Opening notification engine.`);
                     } else {
-                        triggerEmailReminder(targetedItem.name, targetedItem.deadline, 'None');
+                        setTimeout(() => {
+                            triggerEmailReminder(targetedItem.name, targetedItem.deadline, 'None');
+                        }, 500);
                     }
                 } else {
                     targetedItem.completion_date = null;
@@ -345,7 +374,6 @@
             renderLedger();
         }
 
-        // --- RENDER VIEWS ENGINE ---
         function renderApp() {
             renderLedger();
             renderBoard();
@@ -402,47 +430,83 @@
                 const card = document.createElement('div');
                 card.className = "bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4";
                 
+                const isTaskCompleted = task.status === 'Completed';
+
                 let subtasksHtml = '';
-                task.subtasks.forEach(sub => {
-                    subtasksHtml += `
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                            <div class="flex-1 w-full">
-                                <div class="flex items-center justify-between gap-2">
-                                    <div class="flex items-center gap-2">
-                                        <h4 class="text-sm font-semibold text-slate-900">${sub.name}</h4>
-                                        ${sub.repeat_interval !== 'None' ? `<span class="bg-indigo-50 text-indigo-600 text-[10px] px-1.5 py-0.2 rounded font-bold">🔁 ${sub.repeat_interval}</span>` : ''}
+                if (isTaskCompleted) {
+                    subtasksHtml = `<p class="text-xs text-amber-600 italic font-medium bg-amber-50 p-2 rounded-lg border border-amber-100">🚫 Parent task is marked "Completed". Subtasks are locked and archived.</p>`;
+                } else if (task.subtasks.length === 0) {
+                    subtasksHtml = `<p class="text-xs text-slate-400 italic">No subtasks assigned yet.</p>`;
+                } else {
+                    task.subtasks.forEach(sub => {
+                        subtasksHtml += `
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                                <div class="flex-1 w-full">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <h4 class="text-sm font-semibold text-slate-900">${sub.name}</h4>
+                                            ${sub.repeat_interval !== 'None' ? `<span class="bg-indigo-50 text-indigo-600 text-[10px] px-1.5 py-0.2 rounded font-bold">🔁 ${sub.repeat_interval}</span>` : ''}
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <button onclick="editSubTaskInline(${task.id}, ${sub.id})" class="text-[11px] text-indigo-600 font-medium hover:underline cursor-pointer">✏️ Edit</button>
+                                            <button onclick="deleteSubTask(${task.id}, ${sub.id})" class="text-xs text-rose-500 hover:text-rose-700 bg-rose-50/50 p-1 rounded cursor-pointer" title="Delete Subtask">🗑️</button>
+                                        </div>
                                     </div>
-                                    <!-- SUBTASK DELETE BUTTON -->
-                                    <button onclick="deleteSubTask(${task.id}, ${sub.id})" class="text-xs text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition cursor-pointer" title="Delete Subtask">🗑️</button>
+                                    <p class="text-xs text-slate-500 mt-0.5">${sub.details || '*No description.*'}</p>
+                                    <span class="text-[10px] bg-slate-200/60 font-medium px-2 py-0.5 rounded text-slate-600 block mt-1 w-fit">📅 Limit: ${sub.deadline}</span>
                                 </div>
-                                <p class="text-xs text-slate-500">${sub.details || 'No structural notes.'}</p>
-                                <span class="text-[10px] bg-slate-200/60 font-medium px-2 py-0.5 rounded text-slate-600">📅 Limit: ${sub.deadline}</span>
+                                <select onchange="updateStatus(${sub.id}, true, ${task.id}, this.value)" class="bg-white border border-slate-200 rounded-lg text-xs p-1 focus:outline-none w-full sm:w-28 cursor-pointer">
+                                    <option value="Not Started" ${sub.status === 'Not Started'?'selected':''}>Not Started</option>
+                                    <option value="Ongoing" ${sub.status === 'Ongoing'?'selected':''}>Ongoing</option>
+                                    <option value="Completed" ${sub.status === 'Completed'?'selected':''}>Completed</option>
+                                </select>
                             </div>
-                            <select onchange="updateStatus(${sub.id}, true, ${task.id}, this.value)" class="bg-white border border-slate-200 rounded-lg text-xs p-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full sm:w-auto">
-                                <option value="Not Started" ${sub.status === 'Not Started'?'selected':''}>Not Started</option>
-                                <option value="Ongoing" ${sub.status === 'Ongoing'?'selected':''}>Ongoing</option>
-                                <option value="Completed" ${sub.status === 'Completed'?'selected':''}>Completed</option>
-                            </select>
-                        </div>
+                        `;
+                    });
+                }
+
+                let subtaskFormHtml = '';
+                if (!isTaskCompleted) {
+                    subtaskFormHtml = `
+                        <form onsubmit="addSubTask(event, ${task.id})" class="bg-slate-50/50 p-3 rounded-xl border border-dashed border-slate-200 mt-2 space-y-3">
+                            <span class="block text-xs font-bold text-slate-600">➕ Fast Add Subtask</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <input type="text" placeholder="Subtask Title" required class="sub-title px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none">
+                                <input type="text" placeholder="Brief details" class="sub-details px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                <input type="date" required value="${new Date().toISOString().split('T')[0]}" class="sub-start px-2 py-1 bg-white border border-slate-200 rounded-lg text-[11px]">
+                                <input type="date" required value="${new Date().toISOString().split('T')[0]}" class="sub-deadline px-2 py-1 bg-white border border-slate-200 rounded-lg text-[11px]">
+                                <select class="sub-repeat bg-white border border-slate-200 rounded-lg text-[11px] px-1 py-1 focus:outline-none cursor-pointer">
+                                    <option value="None">No Repeat</option>
+                                    <option value="Daily">Daily</option>
+                                    <option value="Weekly">Weekly</option>
+                                    <option value="Monthly">Monthly</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold py-1.5 rounded-lg transition cursor-pointer">Inject Subtask</button>
+                        </form>
                     `;
-                });
+                }
 
                 card.innerHTML = `
-                    <div class="flex flex-col sm:flex-row justify-between items-start gap-2 border-b border-slate-100 pb-3 w-full">
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-3 border-b border-slate-100 pb-3 w-full">
                         <div class="flex-1 w-full">
-                            <div class="flex items-center justify-between gap-2 flex-wrap">
+                            <div class="flex items-center gap-2 flex-wrap justify-between">
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <h3 class="text-base font-bold text-slate-900">${task.name}</h3>
                                     ${task.repeat_interval !== 'None' ? `<span class="bg-indigo-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">🔁 ${task.repeat_interval} Loop</span>` : ''}
                                 </div>
-                                <!-- MAIN TASK DELETE BUTTON -->
-                                <button onclick="deleteMainTask(${task.id})" class="text-sm text-rose-500 hover:text-rose-700 p-1.5 rounded hover:bg-rose-50 transition cursor-pointer" title="Delete Main Task">🗑️ Delete Task</button>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="editMainTaskInline(${task.id})" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold bg-indigo-50 px-2 py-1 rounded transition cursor-pointer">✏️ Edit</button>
+                                    <button onclick="deleteMainTask(${task.id})" class="text-xs text-rose-500 hover:text-rose-700 font-semibold bg-rose-50 px-2 py-1 rounded transition cursor-pointer">🗑️ Delete</button>
+                                </div>
                             </div>
-                            <p class="text-xs text-slate-500 mt-0.5">${task.details || 'No descriptive details provided.'}</p>
+                            <p class="text-xs text-slate-500 mt-1">${task.details || '*No descriptive details.*'}</p>
                             <p class="text-[11px] text-slate-400 mt-1">🗓️ Timeframe: ${task.start_date} to <b class="text-slate-600">${task.deadline}</b></p>
                         </div>
                         <div class="pt-2 sm:pt-0 w-full sm:w-auto">
-                            <select onchange="updateStatus(${task.id}, false, null, this.value)" class="bg-indigo-50 border border-indigo-100 text-indigo-700 font-semibold rounded-xl text-xs px-3 py-1.5 focus:outline-none w-full sm:w-auto">
+                            <select onchange="updateStatus(${task.id}, false, null, this.value)" class="bg-slate-100 border border-slate-200 text-slate-700 font-semibold rounded-xl text-xs px-3 py-1.5 focus:outline-none w-full sm:w-auto cursor-pointer">
                                 <option value="Not Started" ${task.status === 'Not Started'?'selected':''}>Not Started</option>
                                 <option value="Ongoing" ${task.status === 'Ongoing'?'selected':''}>Ongoing</option>
                                 <option value="Completed" ${task.status === 'Completed'?'selected':''}>Completed</option>
@@ -451,29 +515,11 @@
                     </div>
 
                     <div class="space-y-2">
-                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Sub Tasks Mapping</h4>
-                        ${task.subtasks.length === 0 ? '<p class="text-xs text-slate-400 italic">No subtasks assigned yet.</p>' : subtasksHtml}
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-2">Sub Tasks Mapping</h4>
+                        ${subtasksHtml}
                     </div>
 
-                    <!-- Add Subtask Form -->
-                    <form onsubmit="addSubTask(event, ${task.id})" class="bg-slate-50/50 p-3 rounded-xl border border-dashed border-slate-200 mt-2 space-y-3">
-                        <span class="block text-xs font-bold text-slate-600">➕ Fast Add Subtask</span>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <input type="text" placeholder="Subtask Title" required class="sub-title px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none">
-                            <input type="text" placeholder="Brief details" class="sub-details px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none">
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <input type="date" required value="${new Date().toISOString().split('T')[0]}" class="sub-start px-2 py-1 bg-white border border-slate-200 rounded-lg text-[11px]">
-                            <input type="date" required value="${new Date().toISOString().split('T')[0]}" class="sub-deadline px-2 py-1 bg-white border border-slate-200 rounded-lg text-[11px]">
-                            <select class="sub-repeat bg-white border border-slate-200 rounded-lg text-[11px] px-1 py-1 focus:outline-none">
-                                <option value="None">No Repeat</option>
-                                <option value="Daily">Daily</option>
-                                <option value="Weekly">Weekly</option>
-                                <option value="Monthly">Monthly</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold py-1.5 rounded-lg transition cursor-pointer">Inject Subtask</button>
-                    </form>
+                    ${subtaskFormHtml}
                 `;
                 container.appendChild(card);
             });
