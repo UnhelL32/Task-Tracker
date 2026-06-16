@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Task Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkFkdmFuY2VkIFRhc2sgVHJhY2tlciIsCiAgInNob3J0X25hbWUiOiAiVGFza1RyYWNrZXIiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2Y4ZmE5YyIsCiAgInRoZW1lX2NvbG9yIjogIiM0ZjQ2ZTUiCn0=">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <div id="login-screen" class="min-h-screen flex items-center justify-center px-4">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
+            <div class="text-center mb-8">
+                <span class="text-4xl">🎯</span>
+                <h1 class="text-2xl font-bold mt-2 tracking-tight">Task Tracker Portal</h1>
+                <p class="text-sm text-slate-500 mt-1">Please log in to manage your pipeline</p>
+            </div>
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">User ID</label>
+                    <input type="text" id="username" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
+                    <input type="password" id="password" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                </div>
+                <div id="login-error" class="text-sm text-rose-600 hidden font-medium">⚠️ Invalid User ID or Password.</div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-indigo-100 transition duration-200 cursor-pointer">
+                    Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-dashboard" class="hidden min-h-screen flex flex-col">
+        <header class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 sticky top-0 z-50">
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-slate-900 flex items-center gap-2">🎯 Task Dashboard</h1>
+                <p class="text-xs text-indigo-600 font-semibold tracking-wide">Created by: Minhaj _Unhell32</p>
+            </div>
+            <button onclick="handleLogout()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl text-sm transition cursor-pointer">
+                Log Out
+            </button>
+        </header>
+
+        <main class="flex-1 p-4 lg:p-8 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-bold mb-4 flex items-center gap-2">➕ Create Main Task</h2>
+                    <form onsubmit="addMainTask(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Task Title</label>
+                            <input type="text" id="task-title" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Details</label>
+                            <textarea id="task-details" rows="2" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Start Date</label>
+                                <input type="date" id="task-start" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Deadline</label>
+                                <input type="date" id="task-deadline" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition cursor-pointer shadow-md shadow-indigo-50 text-sm">
+                            Add Main Task
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-8">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 mb-2 uppercase tracking-wide text-center">Success Rate (On-Time Completion)</h3>
+                        <div class="h-48 flex items-center justify-center">
+                            <canvas id="successChart"></canvas>
+                        </div>
+                    </div>
+                    <hr class="border-slate-100">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 mb-2 uppercase tracking-wide text-center">Days Missed Past Deadline</h3>
+                        <div class="h-48 flex items-center justify-center">
+                            <canvas id="overdueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="flex border-b border-slate-200 bg-slate-50/50">
+                        <button id="tab-ongoing" onclick="switchLedger('ongoing')" class="flex-1 py-3 font-semibold text-sm border-b-2 border-indigo-600 text-indigo-600 transition cursor-pointer">🔄 Ongoing Ledger</button>
+                        <button id="tab-finished" onclick="switchLedger('finished')" class="flex-1 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition cursor-pointer">✅ Finished Ledger</button>
+                    </div>
+                    <div class="p-4 overflow-x-auto max-h-64 overflow-y-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-slate-400 font-medium text-xs uppercase tracking-wider">
+                                    <th class="pb-2">Name</th>
+                                    <th class="pb-2">Type</th>
+                                    <th class="pb-2">Deadline</th>
+                                    <th class="pb-2">Status / Delays</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ledger-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">🗂️ Task Management Board</h2>
+                <div id="board-container" class="space-y-4">
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // App Database State saved automatically to LocalStorage
+        let state = JSON.parse(localStorage.getItem('task_tracker_state')) || { tasks: [] };
+        let currentTab = 'ongoing';
+        let successChart = null;
+        let overdueChart = null;
+
+        // Check active valid login session on boot
+        window.onload = function() {
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                showDashboard();
+            }
+            // Set default inputs to today
+            const today = new Date().toISOString().split('T')[0];
+            if(document.getElementById('task-start')) document.getElementById('task-start').value = today;
+            if(document.getElementById('task-deadline')) document.getElementById('task-deadline').value = today;
+        };
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            if (user === "Jion32" && pass === "1091514") {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                document.getElementById('login-error').classList.add('hidden');
+                showDashboard();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem('isLoggedIn');
+            document.getElementById('app-dashboard').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-dashboard').classList.remove('hidden');
+            renderApp();
+        }
+
+        function saveState() {
+            localStorage.setItem('task_tracker_state', JSON.stringify(state));
+            renderApp();
+        }
+
+        function calculateDaysOverdue(deadlineStr, status, completionDateStr) {
+            const deadline = new Date(deadlineStr);
+            deadline.setHours(0,0,0,0);
+            const end = (status === 'Completed' && completionDateStr) ? new Date(completionDateStr) : new Date();
+            end.setHours(0,0,0,0);
+
+            if (status !== 'Completed' && end <= deadline) return 0;
+            const diffTime = end - deadline;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays > 0 ? diffDays : 0;
+        }
+
+        function addMainTask(e) {
+            e.preventDefault();
+            const title = document.getElementById('task-title').value;
+            const details = document.getElementById('task-details').value;
+            const start = document.getElementById('task-start').value;
+            const deadline = document.getElementById('task-deadline').value;
+
+            const newTask = {
+                id: Date.now(),
+                name: title,
+                details: details,
+                start_date: start,
+                deadline: deadline,
+                status: 'Not Started',
+                completion_date: null,
+                subtasks: []
+            };
+
+            state.tasks.push(newTask);
+            e.target.reset();
+            saveState();
+        }
+
+        function addSubTask(e, parentId) {
+            e.preventDefault();
+            const form = e.target;
+            const name = form.querySelector('.sub-title').value;
+            const details = form.querySelector('.sub-details').value;
+            const start = form.querySelector('.sub-start').value;
+            const deadline = form.querySelector('.sub-deadline').value;
+
+            const sub = {
+                id: Date.now(),
+                name: name,
+                details: details,
+                start_date: start,
+                deadline: deadline,
+                status: 'Not Started',
+                completion_date: null
+            };
+
+            const parent = state.tasks.find(t => t.id === parentId);
+            if(parent) {
+                parent.subtasks.push(sub);
+                saveState();
+            }
+        }
+
+        function updateStatus(id, isSubtask, parentId, newStatus) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (!isSubtask) {
+                const task = state.tasks.find(t => t.id === id);
+                if (task) {
+                    task.status = newStatus;
+                    task.completion_date = (newStatus === 'Completed') ? todayStr : null;
+                }
+            } else {
+                const parent = state.tasks.find(t => t.id === parentId);
+                if (parent) {
+                    const sub = parent.subtasks.find(s => s.id === id);
+                    if (sub) {
+                        sub.status = newStatus;
+                        sub.completion_date = (newStatus === 'Completed') ? todayStr : null;
+                    }
+                }
+            }
+            saveState();
+        }
+
+        function switchLedger(tab) {
+            currentTab = tab;
+            document.getElementById('tab-ongoing').className = tab === 'ongoing' ? "flex-1 py-3 font-semibold text-sm border-b-2 border-indigo-600 text-indigo-600 text-center cursor-pointer" : "flex-1 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 text-center cursor-pointer";
+            document.getElementById('tab-finished').className = tab === 'finished' ? "flex-1 py-3 font-semibold text-sm border-b-2 border-indigo-600 text-indigo-600 text-center cursor-pointer" : "flex-1 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 text-center cursor-pointer";
+            renderLedger();
+        }
+
+        // --- RENDER ENGINE ---
+        function renderApp() {
+            renderLedger();
+            renderBoard();
+            renderCharts();
+        }
+
+        function renderLedger() {
+            const tbody = document.getElementById('ledger-body');
+            tbody.innerHTML = '';
+            
+            let flatItems = [];
+            state.tasks.forEach(t => {
+                flatItems.push({ name: t.name, type: 'Main Task', status: t.status, deadline: t.deadline, overdue: calculateDaysOverdue(t.deadline, t.status, t.completion_date) });
+                t.subtasks.forEach(s => {
+                    flatItems.push({ name: s.name, type: `Sub (of ${t.name})`, status: s.status, deadline: s.deadline, overdue: calculateDaysOverdue(s.deadline, s.status, s.completion_date) });
+                });
+            });
+
+            const filtered = flatItems.filter(item => currentTab === 'ongoing' ? item.status !== 'Completed' : item.status === 'Completed');
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-slate-400">No records found.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-100 last:border-0 hover:bg-slate-50/50";
+                
+                let statusBadge = item.status === 'Completed' ? 
+                    `<span class="text-emerald-600 font-medium">Completed ${item.overdue > 0 ? `(${item.overdue}d Late)` : '(On Time)'}</span>` : 
+                    `<span class="text-indigo-600 font-medium">${item.status}</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 pr-2 font-medium text-slate-900">${item.name}</td>
+                    <td class="py-3 px-2 text-xs text-slate-500">${item.type}</td>
+                    <td class="py-3 px-2 text-slate-600 text-xs">${item.deadline}</td>
+                    <td class="py-3 pl-2">${statusBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderBoard() {
+            const container = document.getElementById('board-container');
+            container.innerHTML = '';
+
+            if (state.tasks.length === 0) {
+                container.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-slate-400 border border-dashed border-slate-200">No active tasks. Add one using the form.</div>`;
+                return;
+            }
+
+            state.tasks.forEach(task => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4";
+                
+                // Subtasks HTML Builder
+                let subtasksHtml = '';
+                task.subtasks.forEach(sub => {
+                    subtasksHtml += `
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <div class="flex-1">
+                                <h4 class="text-sm font-semibold text-slate-900">${sub.name}</h4>
+                                <p class="text-xs text-slate-500">${sub.details || 'No structural notes.'}</p>
+                                <span class="text-[10px] bg-slate-200/60 font-medium px-2 py-0.5 rounded text-slate-600">📅 Limit: ${sub.deadline}</span>
+                            </div>
+                            <select onchange="updateStatus(${sub.id}, true, ${task.id}, this.value)" class="bg-white border border-slate-200 rounded-lg text-xs p-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                <option value="Not Started" ${sub.status === 'Not Started'?'selected':''}>Not Started</option>
+                                <option value="Ongoing" ${sub.status === 'Ongoing'?'selected':''}>Ongoing</option>
+                                <option value="Completed" ${sub.status === 'Completed'?'selected':''}>Completed</option>
+                            </select>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-2 border-b border-slate-100 pb-3">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">${task.name}</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">${task.details || 'No descriptive details provided.'}</p>
+                            <p class="text-[11px] text-slate-400 mt-1">🗓️ Timeframe: ${task.start_date} to <b class="text-slate-600">${task.deadline}</b></p>
+                        </div>
+                        <select onchange="updateStatus(${task.id}, false, null, this.value)" class="bg-indigo-50 border border-indigo-100 text-indigo-700 font-semibold rounded-xl text-xs px-3 py-1.5 focus:outline-none">
+                            <option value="Not Started" ${task.status === 'Not Started'?'selected':''}>Not Started</option>
+                            <option value="Ongoing" ${task.status === 'Ongoing'?'selected':''}>Ongoing</option>
+                            <option value="Completed" ${task.status === 'Completed'?'selected':''}>Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Sub Tasks Mapping</h4>
+                        ${task.subtasks.length === 0 ? '<p class="text-xs text-slate-400 italic">No subtasks assigned yet.</p>' : subtasksHtml}
+                    </div>
+
+                    <form onsubmit="addSubTask(event, ${task.id})" class="bg-slate-50/50 p-3 rounded-xl border border-dashed border-slate-200 mt-2 space-y-3">
+                        <span class="block text-xs font-bold text-slate-600">➕ Fast Add Subtask</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <input type="text" placeholder="Subtask Title" required class="sub-title px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none">
+                            <input type="text" placeholder="Brief details" class="sub-details px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="date" required value="${new Date().toISOString().split('T')[0]}" class="sub-start px-2 py-1 bg-white border border-slate-200 rounded-lg text-[11px]">
+                            <input type="date" required value="${new Date().toISOString().split('T')[0]}" class="sub-deadline px-2 py-1 bg-white border border-slate-200 rounded-lg text-[11px]">
+                        </div>
+                        <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold py-1.5 rounded-lg transition cursor-pointer">Inject Subtask</button>
+                    </form>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderCharts() {
+            let totalCompletedOnTime = 0;
+            let totalCompletedLate = 0;
+            let overdueLabels = [];
+            let overdueValues = [];
+
+            const evaluateItem = (item) => {
+                const delay = calculateDaysOverdue(item.deadline, item.status, item.completion_date);
+                if (item.status === 'Completed') {
+                    if (delay === 0) totalCompletedOnTime++;
+                    else totalCompletedLate++;
+                } else if (delay > 0) {
+                    overdueLabels.push(item.name);
+                    overdueValues.push(delay);
+                }
+            };
+
+            state.tasks.forEach(t => {
+                evaluateItem(t);
+                t.subtasks.forEach(s => evaluateItem(s));
+            });
+
+            // Destroy previous instances to avoid memory leaks or layout bugs
+            if(successChart) successChart.destroy();
+            if(overdueChart) overdueChart.destroy();
+
+            // Render Success Rate Chart
+            const ctx1 = document.getElementById('successChart').getContext('2d');
+            if(totalCompletedOnTime === 0 && totalCompletedLate === 0) {
+                ctx1.font = "12px sans-serif"; ctx1.fillStyle = "#94a3b8"; ctx1.textAlign = "center";
+                ctx1.fillText("No completed tasks data available", 150, 75);
+            } else {
+                successChart = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['On Time', 'Delayed'],
+                        datasets: [{
+                            data: [totalCompletedOnTime, totalCompletedLate],
+                            backgroundColor: ['#10b981', '#f43f5e'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                });
+            }
+
+            // Render Overdue Bar Chart
+            const ctx2 = document.getElementById('overdueChart').getContext('2d');
+            if(overdueValues.length === 0) {
+                ctx2.font = "12px sans-serif"; ctx2.fillStyle = "#94a3b8"; ctx2.textAlign = "center";
+                ctx2.fillText("🎉 Great! No current items are overdue.", 150, 75);
+            } else {
+                overdueChart = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: overdueLabels,
+                        datasets: [{
+                            label: 'Days Past Due',
+                            data: overdueValues,
+                            backgroundColor: '#6366f1',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { x: { beginAtZero: true, grid: { display: false } }, y: { grid: { display: false } } }
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
